@@ -10,10 +10,31 @@ class Player:
         self.n_jumps=0
         self.WIDTH=WIDTH
         self.level=level
+        self.src=pygame.image.load("./assets/images/player/player1.png")
+        self.src=pygame.transform.scale(self.src,(self.width,self.height))
+        self.flipsrc=pygame.transform.flip(self.src,True,False)
+        self.rect.width-=60
+        self.rect.height-=45
+        self.flipped=False
     
-    def draw(self,win):
+    def draw(self,win,camX,camY):
         # win.blit(robot, (self.rect.x - camX - 15, self.rect.y - camY - 15))
+        self.rect.x-=camX
+        self.rect.y-=camY
         pygame.draw.rect(win,(0,0,255),self.rect)
+        if(self.vel[0]<0):
+            self.flipped=True
+            win.blit(self.flipsrc,(self.rect.x-15,self.rect.y-45))
+        elif self.vel[0]==0:
+            if self.flipped:
+                win.blit(self.flipsrc,(self.rect.x-15,self.rect.y-45))
+            else:
+                win.blit(self.src,(self.rect.x-45,self.rect.y-45))
+        else:
+            self.flipped=False
+            win.blit(self.src,(self.rect.x-45,self.rect.y-45))
+        self.rect.x+=camX
+        self.rect.y+=camY
 
     def physics(self):
         self.vel=[0,0]

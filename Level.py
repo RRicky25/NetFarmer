@@ -11,11 +11,11 @@ class Level:
         self.WIDTH=WIDTH
     
     #draw on the win
-    def draw(self,win):
+    def draw(self,win,camX,camY):
         for i in range(len(self.level)):
             for j in range(len(self.level[i])):
                 if self.level[i][j]==1:
-                    pygame.draw.rect(win, (255, 0, 0), (j*self.WIDTH, i*self.WIDTH, self.WIDTH, self.WIDTH))
+                    pygame.draw.rect(win, (255, 0, 0), (j*self.WIDTH-camX, i*self.WIDTH-camY, self.WIDTH, self.WIDTH))
     
     #return random plant
     def random_plant():
@@ -23,8 +23,8 @@ class Level:
     
     def returnBlocks(self,pos):
         blocks=[]
-        for i in range(pos[1]-1,pos[1]+5):
-            for j in range(pos[0]-1,pos[0]+5):
+        for i in range(pos[1]-1,pos[1]+15):
+            for j in range(pos[0]-1,pos[0]+15):
                 try:
                     if self.level[i][j]==self.legend["land"]:
                         blocks.append(pygame.Rect(j*self.WIDTH,i*self.WIDTH,self.WIDTH,self.WIDTH))

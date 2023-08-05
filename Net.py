@@ -9,8 +9,12 @@ class Net(pygame.sprite.Sprite):
         self.HEIGHT=H
         self.level=level
 
-    def draw(self,win):
+    def draw(self,win,camX,camY):
+        self.rect.x-=camX
+        self.rect.y-=camY
         pygame.draw.rect(win,(0,255,255),self.rect)
+        self.rect.x+=camX
+        self.rect.y+=camY
     
     def update(self):
         self.rect.x+=self.velx

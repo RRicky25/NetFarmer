@@ -11,20 +11,25 @@ win = pygame.display.set_mode((W,H))
 clock = pygame.time.Clock()
 
 level=Level(WIDTH,"./assets/levels/level2.dat")
-player=Player(0,0,2*WIDTH,4*WIDTH,WIDTH,level)
+player=Player(0,0,8*WIDTH,8*WIDTH,WIDTH,level)
 bullets=pygame.sprite.Group()
 crow = Crow(600,20,200,400,20,20)
+camX,camY=0,0
 
 def draw():
+    global camX, camY
     win.fill((0, 0, 0))
-    level.draw(win)
+    camX = (player.rect.x-camX - W // 2)//3
+    camY = (player.rect.y - H // 2- camY)//3
+    level.draw(win,camX,camY)
     #iterate over all the bullets and draw them
     for bullet in bullets:
-        bullet.draw(win)
+        bullet.draw(win,camX,camY)
         bullet.update()
-    player.draw(win)
-    crow.draw(win)
+    # crow.draw(win)
     player.physics()
+    player.draw(win,camX,camY)
+    # player.draw(win)
     # pygame.draw.rect(win, (0, 255, 0), (0, 550 + math.sin(cnt/20) * 10 - camY, WIDTH, 5))
 
 while True:
