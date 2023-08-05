@@ -10,10 +10,31 @@ class Player:
         self.n_jumps=0
         self.WIDTH=WIDTH
         self.level=level
+        self.src=pygame.image.load("./assets/images/player/player1.png")
+        self.src=pygame.transform.scale(self.src,(self.width,self.height))
+        self.flipsrc=pygame.transform.flip(self.src,True,False)
+        self.rect.width-=60
+        self.rect.height-=45
+        self.flipped=False
     
-    def draw(self,win):
+    def draw(self,win,camX,camY):
         # win.blit(robot, (self.rect.x - camX - 15, self.rect.y - camY - 15))
+        self.rect.x-=camX
+        self.rect.y-=camY
         pygame.draw.rect(win,(0,0,255),self.rect)
+        if(self.vel[0]<0):
+            self.flipped=True
+            win.blit(self.flipsrc,(self.rect.x-15,self.rect.y-45))
+        elif self.vel[0]==0:
+            if self.flipped:
+                win.blit(self.flipsrc,(self.rect.x-15,self.rect.y-45))
+            else:
+                win.blit(self.src,(self.rect.x-45,self.rect.y-45))
+        else:
+            self.flipped=False
+            win.blit(self.src,(self.rect.x-45,self.rect.y-45))
+        self.rect.x+=camX
+        self.rect.y+=camY
 
     def physics(self):
         self.vel=[0,0]
@@ -46,7 +67,7 @@ class Player:
         collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
         self.rect.x+=self.vel[0]
         pos=[self.rect.x//self.WIDTH,self.rect.y//self.WIDTH]
-        blocks=self.returnBlocks(pos)
+        blocks=self.level.returnBlocks(pos)
         hit_list=[]
         for block in blocks:
             if self.rect.colliderect(block):
@@ -61,7 +82,7 @@ class Player:
         
         self.rect.y+=self.vel[1]
         pos=[self.rect.x//self.WIDTH,self.rect.y//self.WIDTH]
-        blocks=self.returnBlocks(pos)
+        blocks=self.level.returnBlocks(pos)
         hit_list=[]
         for block in blocks:
             if self.rect.colliderect(block):
@@ -77,17 +98,10 @@ class Player:
                 self.y_momentum=0
         return collision_types
     
-    def returnBlocks(self,pos):
-        blocks=[]
-        for i in range(pos[1]-1,pos[1]+5):
-            for j in range(pos[0]-1,pos[0]+5):
-                try:
-                    if self.level.level[i][j]==self.level.legend["land"]:
-                        blocks.append(pygame.Rect(j*self.WIDTH,i*self.WIDTH,self.WIDTH,self.WIDTH))
-                except:
-                    pass
-        return blocks
-    
     def shoot(self,W,H,mouseX,mouseY):
-        return Net(W,H,self.rect.x,self.rect.y,1,0,self.WIDTH,self.WIDTH,self.level)
+        #normalize the vector in the direction of the mouse
+        dirx,diry=mouseX-self.rect.x,mouseY-self.rect.y
+        norm=(dirx**2+diry**2)**(1/2)/10
+        dirx,diry=dirx/norm,diry/norm
+        return Net(W,H,self.rect.x,self.rect.y,dirx,diry,self.WIDTH,self.WIDTH,self.level)
         # return Net(self.WIDTH,self.WIDTH,self.rect.x,self.rect.y,10,0,self.WIDTH,self.WIDTH)
