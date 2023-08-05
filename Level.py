@@ -21,3 +21,14 @@ class Level:
     def random_plant():
         pass
     
+    def returnBlocks(self,pos):
+        blocks=[]
+        for i in range(pos[1]-1,pos[1]+5):
+            for j in range(pos[0]-1,pos[0]+5):
+                try:
+                    if self.level[i][j]==self.legend["land"]:
+                        blocks.append(pygame.Rect(j*self.WIDTH,i*self.WIDTH,self.WIDTH,self.WIDTH))
+                except:
+                    pass
+        return blocks
+    

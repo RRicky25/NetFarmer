@@ -16,12 +16,12 @@ bullets=pygame.sprite.Group()
 def draw():
     win.fill((0, 0, 0))
     level.draw(win)
-    player.draw(win)
-    player.physics()
     #iterate over all the bullets and draw them
     for bullet in bullets:
         bullet.draw(win)
         bullet.update()
+    player.draw(win)
+    player.physics()
     # pygame.draw.rect(win, (0, 255, 0), (0, 550 + math.sin(cnt/20) * 10 - camY, WIDTH, 5))
 
 while True:
